@@ -86,3 +86,14 @@ Richtung bestimmen (Gyro + Magnetometer → Orientation)
 Position aktualisieren
 Höhe anpassen (Barometer)
 Mit Ground Truth vergleichen
+
+Merksätze:
+
+The fourth root is used because the relationship between acceleration amplitude and step length is highly nonlinear and the fourth-root model was empirically shown to best approximate human walking dynamics.
+
+A constant step length is simple but unrealistic,
+whereas the Weinberg model adapts the step length
+to the walking dynamics and therefore reduces drift.
+
+The scaling factor k of the Weinberg model was calibrated using the known ground‑truth distance.
+This ensures that the estimated step lengths are consistent with the actual walked distance.
