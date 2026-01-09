@@ -97,3 +97,41 @@ to the walking dynamics and therefore reduces drift.
 
 The scaling factor k of the Weinberg model was calibrated using the known ground‑truth distance.
 This ensures that the estimated step lengths are consistent with the actual walked distance.
+
+
+
+
+
+## Sätze für Bericht - chatty
+Sensor data from the smartphone are provided in individual CSV files and are imported separately to allow individual preprocessing and synchronization later.
+
+All sensor timestamps are normalized to seconds and shifted to a common start time in order to ensure consistent time handling and comparability between sensors.
+
+The sampling frequency of the accelerometer is estimated from the mean time difference between consecutive measurements and defines how many sensor samples are recorded per second. It is required for the correct design of digital filters and for converting time-based parameters, such as minimum step duration, into sample-based values, ensuring that walking-related signals are processed correctly.
+
+
+The total acceleration magnitude is computed to obtain an orientation-independent signal that clearly reflects the human gait cycle.
+
+To prepare the accelerometer data for step detection, the total acceleration magnitude is first computed from the x, y, and z axes. This produces an orientation-independent signal that captures the overall motion of the pedestrian. A band-pass filter with cut-off frequencies of 0.7 Hz and 3 Hz is then applied to isolate walking-related acceleration, removing the effects of gravity and high-frequency sensor noise. Finally, the filtered signal is smoothed using a Savitzky–Golay filter with a window length of 0.5 seconds, which reduces residual noise while preserving the shape of the step peaks for accurate detection.
+
+Steps are detected by identifying peaks in the smoothed total acceleration signal. A simple threshold is set as the mean acceleration plus 0.5 m/s², so only peaks corresponding to actual foot strikes are counted. Additionally, a minimum distance of 0.4 seconds between peaks is enforced to match typical human walking cadence. The detected peaks are converted to step times, and the intervals between consecutive steps are calculated. A visualization of the smoothed signal with detected peaks and threshold is provided to verify step detection.
+
+To detect stair steps, we use barometer-derived relative height interpolated to the timestamps of detected steps. A vertical displacement threshold of 0.06 m per step was chosen to reliably identify stairs while accounting for sensor noise and indoor pressure variations; higher thresholds (e.g., 0.12 m) failed to detect any stairs. To avoid false positives from isolated spikes, only sequences of two or more consecutive steps exceeding this threshold are considered stair segments. Detected stair steps are assigned a reduced step length of 0.3 m compared to 0.8 m for flat walking, reflecting the smaller horizontal displacement during stair climbing or descending. This approach ensures realistic step length correction and accurate vertical movement representation in the PDR trajectory.
+
+
+- Possible Errors:
+-- Heading biases and noise
+-- Constant step length model
+-- Misalignment between step times and heading / height
+-- Barometer‑based stair detection imperfections
+-- Magnetic disturbances and environment
+-- No loop‑closure or external corrections
+-- What you can realistically say in the report
+
+
+
+## Ideen für Bericht
+
+Visualisierung: 
+- Barometer
+- Step detection (Acc) -> maybe nur Ausschnitt?
